@@ -118,5 +118,7 @@ Ensure the project aligns with best practices for cost management, security, and
 - **Part 2:** Covers automating the deployment of a WordPress application using containers and orchestration tools.
 - **Part 3:** Emphasizes best practices for cost, security, and resource management.
 
+- example of deploying using Ansible: https://developers.redhat.com/articles/2023/07/20/how-deploy-applications-using-ansible-automation-platform
+
 This project simulates a real-world scenario where cloud resources must be utilized efficiently, with automation ensuring reliability and scalability.
 
