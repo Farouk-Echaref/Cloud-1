@@ -2,7 +2,7 @@
 
 ![alt text](ansible_playbooks-scaled.jpg)
 
-Each play executes part of the overall goal of the playbook, within roles, running one or more tasks. Each task calls an Ansible module.
+Each play in a playbook defines a set of hosts and executes tasks to achieve a specific goal. Within a play, tasks are organized into roles or defined directly, with each task invoking an Ansible module to perform an action.
 
 ## using ansible modular approach
 
