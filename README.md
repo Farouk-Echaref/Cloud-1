@@ -94,6 +94,8 @@ This command will use the **`ec2.py`** dynamic inventory script to query your AW
 - **Scalability**: Easily manage large infrastructures by grouping hosts logically (e.g., by role, environment, etc.).
 - **Efficiency**: You can run tasks only on specific hosts or groups rather than on all managed systems.
 
+- resource: https://docs.ansible.com/ansible/latest/inventory_guide/intro_inventory.html
+
 ---
 
 ## **Ansible Modular Approach**
