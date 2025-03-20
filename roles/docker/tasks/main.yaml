@@ -1,0 +1,25 @@
+- name: Ensure base project directory exists
+  file:
+    path: "/home/{{ ansible_user_from_cloud_vm }}/Cloud_1"
+    state: directory
+
+- name: Ensure necessary volume directories exist for MariaDB and WordPress
+  file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - "/home/fech-cha/data/mariadb"
+    - "/home/fech-cha/data/wordpress"
+
+- name: Copy project configuration files
+  copy:
+    src: "{{ item.src }}"
+    dest: "/home/{{ ansible_user_from_cloud_vm }}/Cloud_1/{{ item.dest }}"
+  loop:
+    - { src: "docker-compose.yaml", dest: "docker-compose.yaml" }
+    - { src: ".env", dest: ".env" }
+
+- name: Deploy services with Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: "/home/{{ ansible_user_from_cloud_vm }}/Cloud_1"
+    state: present
