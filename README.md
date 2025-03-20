@@ -4,7 +4,7 @@
 
 Each play in a playbook defines a set of hosts and executes tasks to achieve a specific goal. Within a play, tasks are organized into roles or defined directly, with each task invoking an Ansible module to perform an action.
 
-## using ansible modular approach
+## **Ansible Modular Approach**
 
 Ansible's **modular approach** revolves around using reusable, self-contained components called **modules** to perform automation tasks. These modules handle specific functions like installing packages, managing files, configuring services, or deploying applications.  
 
@@ -92,10 +92,7 @@ ok: [localhost] => {
 - resource: https://www.redhat.com/en/topics/automation/what-is-an-ansible-module
 - resource for ansible playbooks: https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_intro.html
 
-
-## Ansible roles:
-
-### **Ansible Roles Approach**
+## **Ansible Roles Approach**
 
 Ansible's **roles** provide a structured way to organize and reuse automation tasks. Roles group related tasks, variables, templates, files, and handlers into independent units, making playbooks cleaner, more maintainable, and reusable.
 
