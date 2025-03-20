@@ -2,6 +2,11 @@
 
 ![alt text](ansible_playbooks-scaled.jpg)
 
+```bash
+# bootstrap the infrastructre
+ansible-playbook -i inventory.ini playbook.yml
+```
+
 Each play in a playbook defines a set of hosts and executes tasks to achieve a specific goal. Within a play, tasks are organized into roles or defined directly, with each task invoking an Ansible module to perform an action.
 
 ---
