@@ -629,7 +629,7 @@ services:
 
 ---
 
-## **Summary**
+### **Summary**
 - **Start services** → `state: present`
 - **Restart services** → `state: restarted`
 - **Stop services** → `state: stopped`
@@ -637,5 +637,7 @@ services:
 - **Pull latest images** → `pull: always`
 - **Use a specific Compose file** → `files: ["docker-compose.custom.yml"]`
 - **Use roles** → Automate Docker Compose deployments efficiently.
+
+- resource: https://docs.ansible.com/ansible/latest/collections/community/docker/docker_compose_v2_module.html
 
 ---
