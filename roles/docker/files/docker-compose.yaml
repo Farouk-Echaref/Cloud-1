@@ -1,0 +1,76 @@
+# 42 my_cloud1_network docker-compose configuration
+version: "3.7" #optional, can be changed depends
+
+#Volumes section
+volumes:
+  mariadb:
+    driver: local
+    driver_opts:
+      device: /home/fech-cha/data/mariadb
+      o: bind
+      type: none
+
+  wordpress:
+    driver: local
+    driver_opts:
+      device: /home/fech-cha/data/wordpress
+      o: bind
+      type: none
+
+#Networks section
+networks:
+  my_cloud1_network:
+    name: my_cloud1_network
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 198.168.0.0/16
+
+#Containers section
+services:
+
+  #Mariadb section
+  mariadb:
+    env_file:
+      - .env
+    ports:
+      - "3306:3306"
+    networks:
+      my_cloud1_network:
+        ipv4_address: 198.168.0.2
+    volumes:
+      - "mariadb:/var/lib/mysql"
+    restart: "on-failure"
+    container_name: "mariadb"
+
+  #Wordpress section
+  wordpress:
+    env_file:
+      - .env
+    ports:
+      - "9000:9000"
+    networks:
+      my_cloud1_network:
+        ipv4_address: 198.168.0.3
+    volumes:
+      - "wordpress:/var/www/html/"
+    restart: "on-failure"
+    depends_on:
+      - mariadb
+    container_name: wordpress
+
+  #Nginx Section
+  nginx:
+    env_file:
+      - .env
+    ports:
+      - "443:443"
+    networks:
+      my_cloud1_network:
+       ipv4_address: 198.168.0.4
+    volumes:
+      - "wordpress:/var/www/html/"
+    restart: "on-failure"
+    depends_on:
+      - wordpress
+    container_name: "nginx"
