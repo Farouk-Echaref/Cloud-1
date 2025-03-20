@@ -1,0 +1,16 @@
+- name: Copy Nginx Dockerfile and configuration
+  copy:
+    src: "{{ item.src }}"
+    dest: "/home/{{ ansible_user_from_cloud_vm }}/nginx/{{ item.dest }}"
+  loop:
+    - { src: "Dockerfile", dest: "Dockerfile" }
+    - { src: "tools/nginxScript.sh", dest: "tools/nginxScript.sh" }
+    - { src: "conf/default.conf", dest: "conf/default.conf" }
+
+- name: Build Nginx Docker image
+  docker_image:
+    build:
+      path: "/home/{{ ansible_user_from_cloud_vm }}/nginx"  
+    name: nginx
+    state: present
+    source: build

@@ -9,6 +9,9 @@ ansible-playbook -i inventory.ini playbook.yml
 
 Each play in a playbook defines a set of hosts and executes tasks to achieve a specific goal. Within a play, tasks are organized into roles or defined directly, with each task invoking an Ansible module to perform an action.
 
+- resource for future optimization:
+https://www.redhat.com/en/blog/faster-ansible-modules
+
 ---
 
 ## **Ansible Inventory Approach**
@@ -190,6 +193,8 @@ ok: [localhost] => {
 
 - resource: https://www.redhat.com/en/topics/automation/what-is-an-ansible-module
 - resource for ansible playbooks: https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_intro.html
+- resource for docker module: https://docs.ansible.com/ansible/latest/collections/community/docker/docker_image_module.html#ansible-collections-community-docker-docker-image-module
+- resource for docker module: https://www.redhat.com/en/blog/container-images-ansible
 
 ---
 
