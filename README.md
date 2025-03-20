@@ -306,3 +306,139 @@ In `handlers/main.yml`:
 
 ---
 
+## **Managing Directories in Ansible**
+
+Ansible provides the `file` module to manage directories, including creating, deleting, and modifying their permissions. Directories can be created on remote hosts with specific ownership and permissions.
+
+---
+
+### **Example: Creating a Directory Using the `file` Module**
+The `file` module is commonly used for directory management.
+
+#### **Playbook to Create a Directory**
+```yaml
+- name: Create a directory on remote hosts
+  hosts: all
+  tasks:
+    - name: Ensure /opt/mydir exists
+      file:
+        path: /opt/mydir
+        state: directory
+        owner: myuser
+        group: mygroup
+        mode: '0755'
+```
+
+#### **Explanation:**
+- **`path`**: The directory location (`/opt/mydir`).
+- **`state: directory`**: Ensures that the specified path is a directory.
+- **`owner`** & **`group`**: Sets ownership to `myuser:mygroup`.
+- **`mode`**: Defines permissions (`0755` means read/write/execute for the owner and read/execute for others).
+
+---
+
+### **Example: Creating Multiple Directories**
+You can create multiple directories using a loop.
+
+```yaml
+- name: Create multiple directories
+  hosts: all
+  tasks:
+    - name: Ensure directories exist
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0755'
+      loop:
+        - /opt/project1
+        - /opt/project2
+        - /var/logs/app
+```
+
+🔹 This ensures that `/opt/project1`, `/opt/project2`, and `/var/logs/app` exist with the specified permissions.
+
+---
+
+### **Example: Creating Parent Directories**
+If you need to create a directory along with its parent directories, use `file` as shown:
+
+```yaml
+- name: Create a nested directory structure
+  hosts: all
+  tasks:
+    - name: Ensure /var/www/html/app exists (including parents)
+      file:
+        path: /var/www/html/app
+        state: directory
+        mode: '0755'
+```
+💡 **The `file` module automatically creates missing parent directories**, so there's no need for extra steps.
+
+---
+
+### **Example: Removing a Directory**
+If you want to **remove** a directory, set `state: absent`.
+
+```yaml
+- name: Remove a directory
+  hosts: all
+  tasks:
+    - name: Delete /tmp/old_data directory
+      file:
+        path: /tmp/old_data
+        state: absent
+```
+🔹 This will **delete** the directory `/tmp/old_data` **if it exists**.
+
+---
+
+### **Example: Using Ansible Roles for Directory Management**
+You can create a **role** to manage directories systematically.
+
+#### **Directory Structure for the Role (`manage_dirs/`)**
+```
+manage_dirs/
+├── tasks/
+│   └── main.yml
+├── vars/
+│   └── main.yml
+```
+
+#### **Define Directories in `vars/main.yml`**
+```yaml
+directories:
+  - /opt/app1
+  - /opt/app2
+  - /var/logs/app
+```
+
+#### **Define Tasks in `tasks/main.yml`**
+```yaml
+- name: Ensure necessary directories exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop: "{{ directories }}"
+```
+
+#### **Use the Role in a Playbook**
+```yaml
+- name: Setup directories
+  hosts: all
+  roles:
+    - manage_dirs
+```
+👉 This role ensures all directories defined in `vars/main.yml` are created.
+
+---
+
+### **Important Points Summary**
+- **Create a directory**: Use `file` with `state: directory`.
+- **Set ownership & permissions**: Use `owner`, `group`, and `mode`.
+- **Create multiple directories**: Use a `loop`.
+- **Remove a directory**: Set `state: absent`.
+- **Use roles**: To manage directories more efficiently.
+
+- resource for managing files using Ansible: https://stackoverflow.com/questions/22844905/how-to-create-a-directory-using-ansible
+- resource for managing files using Ansible: https://spacelift.io/blog/ansible-create-directory
