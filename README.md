@@ -94,3 +94,102 @@ ok: [localhost] => {
 
 
 ## Ansible roles:
+
+### **Ansible Roles Approach**
+
+Ansible's **roles** provide a structured way to organize and reuse automation tasks. Roles group related tasks, variables, templates, files, and handlers into independent units, making playbooks cleaner, more maintainable, and reusable.
+
+### **Key Concepts of Roles:**
+- **Directory Structure**: Roles are organized into a predefined directory structure for easy management.
+- **Reusability**: A role can be reused across different playbooks and projects.
+- **Modularity**: Roles encapsulate related components, making the playbook more readable and maintainable.
+
+#### **Role Directory Structure**  
+A typical role directory looks like this:
+```
+my_role/
+├── defaults/
+│   └── main.yml        # Default variables
+├── files/
+│   └── myfile.txt      # Files to be copied to target hosts
+├── handlers/
+│   └── main.yml        # Handlers (e.g., restart service)
+├── meta/
+│   └── main.yml        # Metadata (e.g., dependencies)
+├── tasks/
+│   └── main.yml        # Main tasks (the core functionality of the role)
+├── templates/
+│   └── mytemplate.j2   # Jinja2 templates
+└── vars/
+    └── main.yml        # Variables specific to this role
+```
+
+---
+
+### **Example: Using Roles**
+
+#### **Step 1: Define a Simple Role**
+
+In the `tasks/main.yml` of a role, you define the tasks:
+```yaml
+# my_role/tasks/main.yml
+- name: Install Nginx
+  apt:
+    name: nginx
+    state: present
+
+- name: Start Nginx service
+  service:
+    name: nginx
+    state: started
+    enabled: yes
+```
+
+#### **Step 2: Use the Role in a Playbook**
+```yaml
+- name: Setup Web Server
+  hosts: web_servers
+  roles:
+    - my_role
+```
+
+#### **Step 3: Role with Default Variables**
+
+In `defaults/main.yml`:
+```yaml
+# my_role/defaults/main.yml
+nginx_port: 80
+```
+
+You can use this variable in the role’s tasks:
+```yaml
+# my_role/tasks/main.yml
+- name: Configure Nginx to listen on custom port
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+  notify: Restart Nginx
+```
+
+#### **Step 4: Handlers for Restarting Nginx**
+
+In `handlers/main.yml`:
+```yaml
+# my_role/handlers/main.yml
+- name: Restart Nginx
+  service:
+    name: nginx
+    state: restarted
+```
+
+---
+
+### **Benefits of Using Roles**
+- **Separation of Concerns**: Roles group related tasks and components, making them easier to manage and understand.
+- **Modular**: Roles can be reused in multiple playbooks.
+- **Scalable**: Easily scale automation by adding new tasks or modifying existing ones within roles without changing the overall structure of the playbook.
+
+
+- resource: https://spacelift.io/blog/ansible-roles
+- resource: https://docs.ansible.com/ansible/2.9/user_guide/playbooks_reuse_roles.html?highlight=roles
+- resource: https://docs.ansible.com/ansible/2.9/user_guide/playbooks_reuse_roles.html?highlight=roles
