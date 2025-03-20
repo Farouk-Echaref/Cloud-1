@@ -442,3 +442,200 @@ directories:
 
 - resource for managing files using Ansible: https://stackoverflow.com/questions/22844905/how-to-create-a-directory-using-ansible
 - resource for managing files using Ansible: https://spacelift.io/blog/ansible-create-directory
+
+---
+
+## **Managing Docker Compose in Ansible with `community.docker.docker_compose_v2`**  
+
+The **`community.docker.docker_compose_v2`** module allows you to manage Docker Compose projects with Ansible. It can **start, stop, remove, pull, or restart** containers using a `docker-compose.yml` file.
+
+---
+
+### **1️Installing the Required Collection**
+Before using the module, ensure the `community.docker` collection is installed:  
+
+```bash
+ansible-galaxy collection install community.docker
+```
+
+Also, ensure **Docker** and **Docker Compose V2** are installed on the target machine.
+
+---
+
+### **Basic Example: Running a Docker Compose Service**
+#### **Playbook to Deploy a Docker Compose Stack**
+```yaml
+- name: Deploy Docker Compose services
+  hosts: all
+  tasks:
+    - name: Start services using Docker Compose
+      community.docker.docker_compose_v2:
+        project_src: /opt/docker_app
+        state: present
+```
+
+#### **Explanation:**
+- **`project_src: /opt/docker_app`** → The directory where `docker-compose.yml` is located.
+- **`state: present`** → Ensures the services are up and running.
+
+---
+
+### **Example: Defining a `docker-compose.yml` File**
+Your `docker-compose.yml` should be in the **`project_src`** directory (`/opt/docker_app` in this case):
+
+```yaml
+version: '3.8'
+services:
+  web:
+    image: nginx
+    ports:
+      - "80:80"
+  db:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+```
+
+---
+
+### **Ensuring a Specific Compose File is Used**
+You can specify a different `docker-compose.yml` file:
+
+```yaml
+- name: Use a custom compose file
+  hosts: all
+  tasks:
+    - name: Start services using a specific compose file
+      community.docker.docker_compose_v2:
+        project_src: /opt/docker_app
+        files:
+          - docker-compose.custom.yml
+        state: present
+```
+
+🔹 **This ensures `docker-compose.custom.yml` is used instead of `docker-compose.yml`.**
+
+---
+
+### **Restarting and Updating Services**
+#### **Restart All Containers**
+```yaml
+- name: Restart Docker Compose services
+  hosts: all
+  tasks:
+    - name: Restart all services
+      community.docker.docker_compose_v2:
+        project_src: /opt/docker_app
+        state: restarted
+```
+
+#### **Pull Latest Images and Restart Services**
+```yaml
+- name: Pull new images and restart services
+  hosts: all
+  tasks:
+    - name: Pull latest images
+      community.docker.docker_compose_v2:
+        project_src: /opt/docker_app
+        pull: always
+        state: present
+```
+
+🔹 **`pull: always`** ensures that the latest Docker images are used.
+
+---
+
+### **Stopping and Removing Services**
+#### **Stop Services Without Removing Containers**
+```yaml
+- name: Stop services
+  hosts: all
+  tasks:
+    - name: Stop Docker Compose services
+      community.docker.docker_compose_v2:
+        project_src: /opt/docker_app
+        state: stopped
+```
+
+#### **Remove Containers and Volumes**
+```yaml
+- name: Remove services and volumes
+  hosts: all
+  tasks:
+    - name: Remove services and associated volumes
+      community.docker.docker_compose_v2:
+        project_src: /opt/docker_app
+        state: absent
+```
+
+🔹 **`state: absent`** completely removes all containers, networks, and volumes.
+
+---
+
+### **Example: Managing Docker Compose in an Ansible Role**
+You can structure Docker Compose management as an **Ansible role**.
+
+#### **Directory Structure for the Role (`docker_compose_role/`)**
+```
+docker_compose_role/
+├── tasks/
+│   └── main.yml
+├── templates/
+│   └── docker-compose.yml.j2
+├── vars/
+│   └── main.yml
+```
+
+#### **Define Variables in `vars/main.yml`**
+```yaml
+docker_project_src: /opt/docker_app
+docker_compose_file: docker-compose.yml
+```
+
+#### **Use a Jinja2 Template for `docker-compose.yml.j2`**
+```yaml
+version: '3.8'
+services:
+  web:
+    image: nginx
+    ports:
+      - "80:80"
+  db:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: "{{ db_root_password }}"
+```
+
+#### **Define Tasks in `tasks/main.yml`**
+```yaml
+- name: Deploy Docker Compose stack
+  template:
+    src: docker-compose.yml.j2
+    dest: "{{ docker_project_src }}/docker-compose.yml"
+
+- name: Start services
+  community.docker.docker_compose_v2:
+    project_src: "{{ docker_project_src }}"
+    state: present
+```
+
+#### **Use the Role in a Playbook**
+```yaml
+- name: Deploy Docker Compose with Role
+  hosts: all
+  roles:
+    - docker_compose_role
+```
+
+---
+
+## **Summary**
+- **Start services** → `state: present`
+- **Restart services** → `state: restarted`
+- **Stop services** → `state: stopped`
+- **Remove services** → `state: absent`
+- **Pull latest images** → `pull: always`
+- **Use a specific Compose file** → `files: ["docker-compose.custom.yml"]`
+- **Use roles** → Automate Docker Compose deployments efficiently.
+
+---
