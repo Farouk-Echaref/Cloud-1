@@ -291,6 +291,7 @@ In `handlers/main.yml`:
 - resource: https://spacelift.io/blog/ansible-roles
 - resource: https://docs.ansible.com/ansible/2.9/user_guide/playbooks_reuse_roles.html?highlight=roles
 - resource: https://docs.ansible.com/ansible/2.9/user_guide/playbooks_reuse_roles.html?highlight=roles
+- resource: https://www.techcrumble.net/2019/12/how-install-docker-and-docker-compose-using-ansible-playbooks/
 
 ---
 
