@@ -2,7 +2,7 @@
   copy:
     src: "{{ item.src }}"
     dest: "/home/{{ ansible_user_from_cloud_vm }}/nginx/{{ item.dest }}"
-  loop:
+  loop: # the loop here iterates over a list of dictionaries or a list of key-value pairs
     - { src: "Dockerfile", dest: "Dockerfile" }
     - { src: "tools/nginxScript.sh", dest: "tools/nginxScript.sh" }
     - { src: "conf/default.conf", dest: "conf/default.conf" }

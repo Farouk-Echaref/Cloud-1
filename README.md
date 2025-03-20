@@ -195,6 +195,12 @@ ok: [localhost] => {
 - resource for ansible playbooks: https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_intro.html
 - resource for docker module: https://docs.ansible.com/ansible/latest/collections/community/docker/docker_image_module.html#ansible-collections-community-docker-docker-image-module
 - resource for docker module: https://www.redhat.com/en/blog/container-images-ansible
+- resource for working with loops: https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_loops.html
+- resource for working with copy module and syntax: https://docs.ansible.com/ansible/latest/collections/ansible/builtin/copy_module.html
+- resource for working with the copy module: https://www.youtube.com/watch?v=_kh3rjhG3Bw
+- resource using dictionaries in ansible: https://www.middlewareinventory.com/blog/ansible-dict/
+- resource looping over list of dicts: https://stackoverflow.com/questions/55425311/ansible-iterate-over-a-list-of-dictionaries-loop-vs-with-items
+- resource list and dicts : https://www.redhat.com/en/blog/ansible-lists-dictionaries-yaml
 
 ---
 
