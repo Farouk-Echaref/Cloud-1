@@ -1,0 +1,18 @@
+---
+# maybe we can copy and build in the /tmp folder
+- name: Copy MariaDB Dockerfile and configuration files
+  copy:
+    src: "{{ item.src }}" # templated variable that gets its value from the loop items
+    dest: "/home/{{ ansible_user_from_cloud_vm }}/mariadb/{{ item.dest }}"
+  loop:
+    - { src: "Dockerfile", dest: "Dockerfile" }
+    - { src: "conf/50-server.cnf", dest: "50-server.cnf" }
+    - { src: "conf/create_db.sh", dest: "create_db.sh" }
+
+- name: Build MariaDB Docker image
+  docker_image:
+    build:
+      path: "/home/{{ ansible_user_from_cloud_vm }}/mariadb"  
+    name: mariadb
+    state: present
+    source: build
