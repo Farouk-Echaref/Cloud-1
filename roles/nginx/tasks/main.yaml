@@ -1,16 +1,17 @@
 - name: Copy Nginx Dockerfile and configuration
   copy:
-    src: "{{ item.src }}"
-    dest: "/home/{{ ansible_user_from_cloud_vm }}/nginx/{{ item.dest }}"
-  loop: # the loop here iterates over a list of dictionaries or a list of key-value pairs
-    - { src: "Dockerfile", dest: "Dockerfile" }
-    - { src: "tools/nginxScript.sh", dest: "tools/nginxScript.sh" }
-    - { src: "conf/default.conf", dest: "conf/default.conf" }
+    src: "{{ item }}"
+    dest: "/home/{{ ansible_user }}/nginx/{{ item }}"
+  with_items:
+    - Dockerfile
+    - nginxScript.sh
+    - default.conf
 
 - name: Build Nginx Docker image
   docker_image:
     build:
-      path: "/home/{{ ansible_user_from_cloud_vm }}/nginx"  
+      path: "/home/{{ ansible_user }}/nginx"  
     name: nginx
     state: present
     source: build
+    tag: 1337

@@ -25,10 +25,10 @@ RUN apk add openssl
 
 EXPOSE 443
 
-COPY ./tools/nginxScript.sh .
+COPY ./nginxScript.sh .
 
 RUN chmod 777 ./nginxScript.sh
 
-COPY ./conf/default.conf /etc/nginx/http.d/
+COPY ./default.conf /etc/nginx/http.d/
 
 CMD ["./nginxScript.sh"]
