@@ -1,23 +1,13 @@
-# MariaDB Dockerfile
-
 FROM debian:buster
 
-ARG DB_NAME
-ARG DB_USER
-ARG DB_ROOT_PASS
-ARG DB_USER_PASS
-ARG DB_HOST
+RUN apt-get update -y && apt-get install mariadb-server -y;\
+    sed -i "s/127.0.0.1/0.0.0.0/" /etc/mysql/mariadb.conf.d/50-server.cnf;
 
-RUN apt-get update
-RUN apt-get install -y mariadb-server
+COPY ./script.sh /tmp/script.sh
 
+RUN chmod +x /tmp/*
 
-COPY ./conf/50-server.cnf /etc/mysql/mariadb.conf.d/
-COPY ./conf/create_db.sh .
+ENTRYPOINT [ "/tmp/script.sh" ]
 
-RUN chmod +x create_db.sh
-RUN ./create_db.sh
+CMD ["mysqld_safe"]
 
-EXPOSE 3306
-
-CMD ["mysqld"]
