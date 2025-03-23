@@ -1,0 +1,9 @@
+---
+all:
+  hosts:
+    server1:
+      ansible_host: "{{ secrets.server1.host }}"
+      ansible_user: "{{ secrets.server1.user }}"
+      ansible_ssh_private_key_file: "{{ secrets.server1.ssh_key_path }}"
+      ansible_python_interpreter: "/usr/bin/python3"
+      # ansible_become_pass: "{{ secrets.server1.password }}"
