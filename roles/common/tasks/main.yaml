@@ -1,58 +1,50 @@
 ---
 # common role to install dependencies
-- name: Install docker packages
+- name: Install necessary dependencies
   apt:
     name: "{{ item }}"
     state: present
     update_cache: yes
   with_items:
-    - apt-transport-https
     - ca-certificates
     - curl
     - software-properties-common
-  tags:
-    - docker
-- name: Add Docker s official GPG key
-  apt_key:
+
+
+- name: Create /etc/apt/keyrings directory
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+
+- name: Download Docker's official GPG key
+  get_url:
     url: https://download.docker.com/linux/ubuntu/gpg
-    state: present
-  tags:
-    - docker
-- name: Verify that we have the key with the fingerprint
-  apt_key:
-    id: 0EBFCD88
-    state: present
-  tags:
-    - docker
-- name: Set up the stable repository
+    dest: /etc/apt/keyrings/docker.asc
+    mode: '0644'
+
+- name: Add the Docker repository to Apt sources
   apt_repository:
-    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable
+    repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable"
     state: present
     update_cache: yes
-  tags:
-    - docker
-- name: Update apt packages
+
+
+- name: Install Docker and Docker Compose
   apt:
-    update_cache: yes
-  tags:
-    - docker
-- name: Install docker
-  apt:
-    name: docker-ce
+    name: "{{ item }}"
     state: present
-    update_cache: yes
-  #notify: Start docker on boot
-  tags:
-    - docker
-- name: Add remote root user to "docker" group
-  user:
-    name: "root"
-    group: "docker"
-    append: yes
-  tags:
-    - docker
-- name: Install docker-compose
-  get_url: 
-    url : https://github.com/docker/compose/releases/download/1.25.1-rc1/docker-compose-Linux-x86_64
-    dest: /usr/local/bin/docker-compose
-    mode: 'u+x,g+x'
+  with_items:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-compose-plugin
+
+- name: create inception folders
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - nginx
+    - wordpress
+    - mariadb
