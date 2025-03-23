@@ -1,18 +1,19 @@
 ---
 - name: Copy WordPress Dockerfile and configuration
   copy:
-    src: "{{ item.src }}"
-    dest: "/home/{{ ansible_user }}/wordpress/{{ item.dest }}"
-  loop:
-    - { src: "Dockerfile", dest: "Dockerfile" }
-    - { src: "tools/wp_script.sh", dest: "tools/wp_script.sh" }
-    - { src: "conf/php.ini", dest: "conf/php.ini" }
-    - { src: "conf/www.conf", dest: "conf/www.conf" }
+    src: "{{ item }}"
+    dest: "/home/{{ ansible_user }}/wordpress/{{ item }}"
+  with_items:
+    - Dockerfile
+    - script.sh
+
 
 - name: Build WordPress Docker image
   docker_image:
     build:
-      path: "/home/{{ ansible_user_from_cloud_vm }}/wordpress"  
+      path: "/home/{{ ansible_user }}/wordpress"  
     name: wordpress
     state: present
     source: build
+    tag: 1337
+

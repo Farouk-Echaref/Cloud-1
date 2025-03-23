@@ -1,35 +1,11 @@
-#Wordpress Dockerfile
-
 FROM debian:buster
 
-ARG WP_USER \
-    WP_PASS \
-    WP_EMAIL \
-    WP_TITLE \
-    DB_HOST \
-    DB_NAME \
-    DB_USER \
-    DB_USER_PASS \
-    USR \
-    USER_EMAIL \
-    USER_PASSWORD 
+RUN apt update -y\
+	&& apt install php-fpm php7.3-fpm php-mysql curl -y
 
-RUN mkdir -p /run/php/
+COPY ./script.sh /tmp/
+RUN chmod 777 /tmp/script.sh
 
-RUN apt-get update 
+ENTRYPOINT [ "/tmp/script.sh" ]
 
-RUN apt-get install php php7.3-fpm php-mysql curl -y
-
-COPY ./tools/wp_script.sh .
-
-RUN chmod 777 ./wp_script.sh
-
-COPY ./conf/www.conf /etc/php/7.3/fpm/pool.d
-
-COPY ./conf/php.ini /etc/php/7.3/fpm
-
-EXPOSE 9000
-
-ENTRYPOINT [ "./wp_script.sh" ]
-
-CMD [ "php-fpm7.3", "-F" ]
+CMD ["/usr/sbin/php-fpm7.3", "-F"]
