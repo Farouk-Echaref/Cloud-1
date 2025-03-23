@@ -1,8 +1,9 @@
 ---
 - name: Cloud1 - Deploy Inception Project Using Ansible
-  hosts: cloud_machine
-  become: yes     # privilege escalation
-  remote_user: root
+  hosts: all
+  become: yes
+  vars_files:
+    - secrets.yml
   roles:
     - common
     - nginx
