@@ -1,76 +1,62 @@
-# 42 my_cloud1_network docker-compose configuration
-version: "3.7" #optional, can be changed depends
+version: '3.7'
 
-#Volumes section
-volumes:
-  mariadb:
-    driver: local
-    driver_opts:
-      device: /home/fech-cha/data/mariadb
-      o: bind
-      type: none
-
-  wordpress:
-    driver: local
-    driver_opts:
-      device: /home/fech-cha/data/wordpress
-      o: bind
-      type: none
-
-#Networks section
 networks:
-  my_cloud1_network:
-    name: my_cloud1_network
+  inception:
+    name: inception
     driver: bridge
-    ipam:
-      config:
-        - subnet: 198.168.0.0/16
 
-#Containers section
-services:
-
-  #Mariadb section
+volumes:
+  wordpress:
+    name: wp_files
+    driver_opts:
+      device: "/home/newuser/data/mariadb"
+      o: bind
+      type: none
   mariadb:
-    env_file:
-      - .env
+    name: wp_database
+    driver_opts:
+      device: "/home/newuser/data/wordpress"
+      o: bind
+      type: none
+
+services:
+  mariadb:
+    env_file: .env
+    image: mariadb:1337
+    container_name: mariadb
+    networks:
+      - inception
     ports:
       - "3306:3306"
-    networks:
-      my_cloud1_network:
-        ipv4_address: 198.168.0.2
     volumes:
-      - "mariadb:/var/lib/mysql"
-    restart: "on-failure"
-    container_name: "mariadb"
+      - mariadb:/var/lib/mysql
+    restart: always
 
-  #Wordpress section
   wordpress:
-    env_file:
-      - .env
+    env_file: .env
+    image: wordpress:1337
+    container_name: wordpress
+    networks:
+      - inception
     ports:
       - "9000:9000"
-    networks:
-      my_cloud1_network:
-        ipv4_address: 198.168.0.3
     volumes:
-      - "wordpress:/var/www/html/"
-    restart: "on-failure"
+      - wordpress:/var/www/html
     depends_on:
       - mariadb
-    container_name: wordpress
+    restart: always
 
-  #Nginx Section
+
   nginx:
-    env_file:
-      - .env
+    env_file: .env
+    image: nginx:1337
+    container_name: nginx
+    networks:
+      - inception
     ports:
       - "443:443"
-    networks:
-      my_cloud1_network:
-       ipv4_address: 198.168.0.4
     volumes:
-      - "wordpress:/var/www/html/"
-    restart: "on-failure"
+      - wordpress:/var/www/html
     depends_on:
       - wordpress
-    container_name: "nginx"
+    restart: always
