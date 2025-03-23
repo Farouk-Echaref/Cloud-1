@@ -33,7 +33,7 @@ services:
     restart: always
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$ROOT_PASSWORD"]
-      timeout: 20s
+      timeout: 10s
       retries: 10
 
   wordpress:
